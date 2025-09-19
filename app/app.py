@@ -1,14 +1,14 @@
 import sys
 from pathlib import Path
-# making the parent folder importable so i can do `from src ...`
-sys.path.append(str(Path(__file__).resolve().parents[1]))  # allow "src" imports
+# making the parent folder importable so i can import from my source folder
+sys.path.append(str(Path(__file__).resolve().parents[1]))  # allowing my source imports
 
 import json
 import numpy as np
 import pandas as pd
 import streamlit as st
 import joblib
-from src.cf_utils import TauWrapper, compute_counterfactuals  # our model wrapper and CF generator
+from src.cf_utils import TauWrapper, compute_counterfactuals  # contains the model wrapper and CF generator
 
 # inspiration for streamlit template was taken from https://streamlit.io/gallery
 
@@ -69,7 +69,7 @@ with st.sidebar:
 def options_for_column(column_name):
     """
     grab selectbox options from dice_train so I only let users pick values that actually exist.
-    'missing' is our neutral token for NA. super useful so DiCE doesn't explode later.
+    'missing' is the neutral token for NA. super useful so DiCE doesn't explode later.
     """
     if column_name in dice_train.columns:
         # filter out the literal string "missing" so I can re-add it at the front

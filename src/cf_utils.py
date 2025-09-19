@@ -43,7 +43,7 @@ class DiceToModelBridge:
     done shape, order, and dtypes now match training exactly.
     
     """
-    def __init__(self, template_row: pd.Series):
+    def __init__(self, template_row):
         # template_row must contain the full model input columns in the right order
         self.template = template_row
 
@@ -79,7 +79,7 @@ class WrappedForDice:
 # -----------------------
 
 
-def infer_binary_cols(df: pd.DataFrame) -> List[str]:
+def infer_binary_cols(df):
     """
     The Goal of this function
     ----
@@ -93,7 +93,7 @@ def infer_binary_cols(df: pd.DataFrame) -> List[str]:
     """
     assert isinstance(df, pd.DataFrame), " making sure right here that dataframe must be a pandas DataFrame"
 
-    def is_yes_no(values) -> bool:
+    def is_yes_no(values):
         """ This function is a tiny checker that decides if a column is a yes/no flag """
 
         # loop through values
@@ -106,7 +106,7 @@ def infer_binary_cols(df: pd.DataFrame) -> List[str]:
         return len(values) > 0  # at least one non-missing value
     
 
-    def is_zero_one(values) -> bool:
+    def is_zero_one(values):
         """
         this function is a tiny checker that decides if a column is a 0/1 flag
         it returns true if every value is 0 or 1.
@@ -223,7 +223,7 @@ def impute_for_dice(df: pd.DataFrame, binary_cols, cat_cols) -> pd.DataFrame:
 # 
 #  Schema contract from metadata
 # -------------------------------
-def get_expected_raw(pipe, meta: dict) -> List[str]:
+def get_expected_raw(pipe, meta):
     """
     Goal
     -----------
@@ -342,7 +342,7 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     # DiCE expects a target column
     editable_query_view["highrisk"] = int(wrapped_model_for_dice.predict(editable_query_view.copy())[0])  # <- label the query row so DiCE knows the current class
     
-    # dataset DiCE will see = (train minus immutables) + our query
+    # dataset DiCE will see = (train minus immutables) + the query
     dataset_view_for_dice = pd.concat(
         [safe_training_dataframe.drop(columns=immutable_feature_names, errors="ignore"), editable_query_view],
         ignore_index=True,

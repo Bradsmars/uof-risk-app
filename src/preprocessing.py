@@ -11,7 +11,7 @@ def replace_global_na(df):
 
 # ---------- helper for engineering target column ----------
 
-def make_highrisk(row) -> str:
+def make_highrisk(row):
     """return HighRisk if record matches Severe/Moderate rules; else Minor
     - here im making the highrisk column using the injury levels and injury flags
     from whether a person is injured from force or when an officer is injured.
@@ -50,7 +50,7 @@ def add_highrisk_label(df):
 
 def add_subject_vulnerable(df):
     """
-    flag subjects who are (a) under 18, (b) 65 +, or (c) have a recorded
+    flag subjects who are 1) under 18, 2) 65 +, or 3) have a recorded
     mental‑health impact factor.
     produces a binary int8 column subject_vulnerable (binary)
     """

@@ -35,6 +35,7 @@ dependencies = [
   "pycalib>=0.1.0.dev6",
   "seaborn>=0.13.2",
   "imblearn>=0.0",
+  "pathlib>=1.0.1",
 ]
 
 [dependency-groups]

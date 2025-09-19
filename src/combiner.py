@@ -19,9 +19,9 @@ def combine_years(frames):
     assert all(isinstance(df, pd.DataFrame) for df in dfs), "all values must be dataFrames"
 
     # first make the full set of columns across all years (sorted for a stable order)
-    all_cols = sorted({col 
+    all_cols = sorted({column 
                        for df in dfs
-                       for col in df.columns})
+                       for column in df.columns})
 
     # second align each df to that union (reindex adds any missing cols with pd.NA)
     aligned = [df.reindex(columns=all_cols, fill_value=pd.NA) for df in dfs]

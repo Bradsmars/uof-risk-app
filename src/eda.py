@@ -1,9 +1,8 @@
-# eda_simpler_plots.py
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use("Agg")  # s for non-GUI environments
+matplotlib.use("Agg")  #
 import matplotlib.pyplot as plt
 
 
@@ -25,7 +24,7 @@ def map_highrisk_to_binary(target_series):
 
 
 def save_bar(series_or_frame, title, out_path):
-    """Save a very basic bar chart."""
+    """ saving  bar charts"""
     plt.figure()
     series_or_frame.plot(kind="bar")
     plt.title(title)
@@ -36,7 +35,7 @@ def save_bar(series_or_frame, title, out_path):
 
 def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
     """
-    Saves PNGs to output_directory and returns the absolute folder path.
+    saves pngs to output_directory and returns the absolute folder path.
     """
     output_path = Path(output_directory)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -96,7 +95,7 @@ def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
         ax.set_ylim(0, 1)
         
         plt.tight_layout()
-        plt.savefig(output_path / "02_rate_by_year.png", dpi=150)
+        plt.savefig(output_path / "02HighRisk_rate_by_year.png", dpi=150)
         plt.close()
 
 
@@ -118,11 +117,11 @@ def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
         )
         save_bar(
             rate_by_vuln,
-            "HighRisk rate by subject vulnerability (0/1/missing)",
+            "average HighRisk rate by subject vulnerability",
             output_path / "04_rate_by_subject_vulnerability.png"
         )
         
-    # HighRisk by police_force
+    # average HighRisk rate by police_force
     if "police_force" in dataframe.columns:
         force = dataframe["police_force"].astype(str)
         force = force.fillna("missing")
@@ -135,7 +134,7 @@ def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
             .mean()
             .reindex(top_forces)
         )
-        save_bar(rate_by_force, "HighRisk rate by police_force (top 10 by volume)",
+        save_bar(rate_by_force, "mean HighRisk rate by police_force (top 10 police forces)",
                  output_path / "05_rate_by_force_top10.png")
 
 
@@ -146,7 +145,7 @@ def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
         top_ethnicities = ethnicity.value_counts().head(10).index
         mask = ethnicity.isin(top_ethnicities)
         
-        # Calculate counts instead of rates
+        # calculate counts instead of rates
         count_by_ethnicity = (
             pd.Series(target_binary[mask].values, index=ethnicity[mask])
             .groupby(level=0)
@@ -188,7 +187,7 @@ def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
             .mean()
             .reindex(top_ages)
         )
-        save_bar(rate_by_age, "HighRisk rate by age (top 5)",
+        save_bar(rate_by_age, "HighRisk rate by age (top 10)",
                  output_path / "07_rate_by_age_top5.png")
 
     #  4) HighRisk rate by police_force (top 10 by volume)
@@ -212,7 +211,7 @@ def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
     if "police_force" in dataframe.columns:
         # Getting the top 5 police forces
         top_forces_counts = dataframe["police_force"].astype(str).value_counts().head(5)
-        # 6) Top 5 police forces by incident count
+        # Top 5 police forces by incident count
         save_bar(top_forces_counts, "top 5 police forces by incident count",
                  output_path / "09_forces_counts.png")
         
@@ -255,7 +254,7 @@ def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
     
     
         # 14) HighRisk rate by gender
-    # 14) HighRisk rate by gender
+    # 14) HighRisk count by gender
     if "person_perceived_gender" in dataframe.columns:
         gender = dataframe["person_perceived_gender"].astype(str).str.strip()
         ethnicity = ethnicity.fillna("missing").replace("None", "missing values")
@@ -266,15 +265,15 @@ def run_eda_simpler(dataframe, output_directory = "eda_simple_plots"):
         count_by_gender = (
             pd.Series(target_binary[mask].values, index=gender[mask])
             .groupby(level=0)
-            .sum()  # Changed from .mean() to .sum() for counts
+            .sum()  # sum for counts
             .reindex(top_genders)
         )
         
-        # Creating a custom plot with better visibility
+        # creating a custom plot with better visibility
         plt.figure(figsize=(12, 8))
         bars = count_by_gender.plot(kind="bar", color='crimson', alpha=0.8)
         
-        # Adding value labels on top of bars (now showing counts)
+        # adding value labels on top of bars (now showing counts)
         for i, v in enumerate(count_by_gender.values):
             plt.text(i, v + v*0.01, f'{int(v)}', ha='center', va='bottom', fontweight='bold')
         

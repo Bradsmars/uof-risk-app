@@ -1,5 +1,5 @@
 """
-Just small Input and output helpers for the Police Use-of-Force Excel files.
+small Input and output helpers for the Police Use-of-Force Excel files.
 
 No ZenML stuff. No cleaning. We only read sheets and add a year tag when needed.
 """
@@ -17,7 +17,7 @@ def load_sheet(file_path, sheet_name):
         return pd.read_excel(file_path, sheet_name=sheet_name)
     except ValueError as error:  # pandas raises ValueError if the sheet is missing
         raise RuntimeError(
-            f"sheets '{sheet_name}' not found brad in {file_path.name}"
+            f"sheets '{sheet_name}' not found  {file_path.name}"
         ) from error
 
 
@@ -38,10 +38,10 @@ def load_workbook(file_path, year_sheets, other_sheets):
     read the sheets we care about from one workbook.
 
     inputs
-       file_path   : path to the .xlsx
-       year_sheets : mapping like {"2020_21": "2020/21", "2021_22": "2021/22"}
-                      we will read each sheet and insert a 'year' column with the mapped value
-      other_sheets: list of sheet names we want as-is (no extra 'year' tagging here)
+       file_path   - path to the .xlsx
+       year_sheets - mapping like {2020_21: 2020/21, 2021_22: 2021/22}
+                      we will read each sheet and insert a year column with the mapped value
+      other_sheets- list of sheet names we want as-is (no extra year tagging here)
 
     output
       - list of dataframes in the order we read them (keep it predictable)
