@@ -273,7 +273,7 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     4) give DiCE a view with only editable columns, but keep a bridge so predictions
         still hit the FULL model schema at the same tau.
         
-    5) set guard rails what features DiCE may vary + safe ranges: any_firearm=0,
+    5) set guard rails what features DiCE may vary and im going to include safe ranges: any_firearm=0,
         multi_location=0, tactic_count (only goes down), impact_factor_sum (only goes down) 
 
     6) ask DiCE for counterfactuals with desired_class=0 so results flip toward Minor
