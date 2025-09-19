@@ -1,6 +1,5 @@
 
 import json
-from typing import List
 import numpy as np
 import pandas as pd
 import dice_ml
@@ -162,7 +161,7 @@ NUM_BASE = [
 
 
 
-def impute_for_dice(df: pd.DataFrame, binary_cols, cat_cols) -> pd.DataFrame:
+def impute_for_dice(df, binary_cols, cat_cols):
     """
     --------------------------
     The goal of this function 

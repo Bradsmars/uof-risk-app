@@ -46,7 +46,7 @@ def load_artifacts():
 try:
     pipeline, metadata, dice_train, expected_raw = load_artifacts()
 except Exception as error:
-    # dont crash ugly, just explain what went wrong
+    # error handling 
     st.error(f"failed to load artefacts: {error}")
     st.stop()
 
@@ -57,8 +57,8 @@ thresholded_model_wrapper = TauWrapper(pipeline, tau=decision_threshold_tau)
 
 # cute sidebar info + a manual cache clear button
 with st.sidebar:
-    st.markdown(f"**Model:** `{LATEST_MODEL_PATH.name}`")
-    st.markdown(f"**Threshold τ:** `{decision_threshold_tau:.3f}`")
+    st.markdown(f"Model: `{LATEST_MODEL_PATH.name}`")
+    st.markdown(f"Threshold τ: `{decision_threshold_tau:.3f}`")
     if st.button("Clear cache & reload"):
         st.cache_resource.clear()
         st.rerun()
@@ -253,8 +253,8 @@ with right_column:
          
             # 6 Show a SHAP global importance image if we saved one
             # ------------------------------------------------------
-            shap_image_path = next(iter(LATEST_MODEL_PATH.parent.glob("shap*importance*.png")), None) or \
-                              next(iter(LATEST_MODEL_PATH.parent.glob("shap*.png")), None)
+            shap_image_path = next(iter(LATEST_MODEL_PATH.parent.glob("shap importance .png")), None) or \
+                              next(iter(LATEST_MODEL_PATH.parent.glob("shap .png")), None)
             if shap_image_path:
                 st.subheader("Global feature importance (SHAP)")
                 st.image(str(shap_image_path), use_column_width=True)

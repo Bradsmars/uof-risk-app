@@ -36,6 +36,8 @@ dependencies = [
   "seaborn>=0.13.2",
   "imblearn>=0.0",
   "pathlib>=1.0.1",
+  "dice>=4.0.0",
+  "datetime>=5.5",
 ]
 
 [dependency-groups]
