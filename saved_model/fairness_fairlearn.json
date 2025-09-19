@@ -1,0 +1,119 @@
+{
+  "tau_used": 0.044,
+  "equal_opportunity": {
+    "ethnicity": {
+      "equal_opportunity_ratio": 0.9402677831429396,
+      "equal_opportunity_difference": 0.054604607596198895,
+      "by_group": {
+        "TPR": {
+          "asian_or_asian_british": 0.8595521150124412,
+          "black_or_black_british": 0.9060574351819556,
+          "missing": 0.8833646869121204,
+          "mixed": 0.9005416051206302,
+          "other": 0.8668730650154799,
+          "white": 0.9141567226086401
+        },
+        "FPR": {
+          "asian_or_asian_british": 0.48643463962729516,
+          "black_or_black_british": 0.5784637815960482,
+          "missing": 0.684387530720476,
+          "mixed": 0.5800968076524144,
+          "other": 0.5227286899045956,
+          "white": 0.5957570081425074
+        }
+      },
+      "counts": {
+        "white": 544231,
+        "black_or_black_british": 88160,
+        "asian_or_asian_british": 51054,
+        "missing": 26914,
+        "mixed": 19385,
+        "other": 17652
+      }
+    },
+    "gender": {
+      "equal_opportunity_ratio": 0.9293553405780414,
+      "equal_opportunity_difference": 0.06804360421496458,
+      "by_group": {
+        "TPR": {
+          "female": 0.9457280450192089,
+          "male": 0.8951375445331945,
+          "missing": 0.9631811487481591,
+          "other": 0.9142857142857143
+        },
+        "FPR": {
+          "female": 0.7257506019278708,
+          "male": 0.552207526433471,
+          "missing": 0.6795467108899945,
+          "other": 0.7315130830489193
+        }
+      },
+      "counts": {
+        "male": 589211,
+        "female": 136020,
+        "missing": 20127,
+        "other": 2038
+      }
+    }
+  },
+  "equalized_odds": {
+    "ethnicity": {
+      "equalized_odds_difference": 0.19795289109318082,
+      "equalized_odds_ratio": 0.7107590623622414,
+      "ratios_agg": "worst_case",
+      "method": "between_groups",
+      "by_group": {
+        "TPR": {
+          "asian_or_asian_british": 0.8595521150124412,
+          "black_or_black_british": 0.9060574351819556,
+          "missing": 0.8833646869121204,
+          "mixed": 0.9005416051206302,
+          "other": 0.8668730650154799,
+          "white": 0.9141567226086401
+        },
+        "FPR": {
+          "asian_or_asian_british": 0.48643463962729516,
+          "black_or_black_british": 0.5784637815960482,
+          "missing": 0.684387530720476,
+          "mixed": 0.5800968076524144,
+          "other": 0.5227286899045956,
+          "white": 0.5957570081425074
+        }
+      },
+      "counts": {
+        "white": 544231,
+        "black_or_black_british": 88160,
+        "asian_or_asian_british": 51054,
+        "missing": 26914,
+        "mixed": 19385,
+        "other": 17652
+      }
+    },
+    "gender": {
+      "equalized_odds_difference": 0.17930555661544822,
+      "equalized_odds_ratio": 0.7548840058087418,
+      "ratios_agg": "worst_case",
+      "method": "between_groups",
+      "by_group": {
+        "TPR": {
+          "female": 0.9457280450192089,
+          "male": 0.8951375445331945,
+          "missing": 0.9631811487481591,
+          "other": 0.9142857142857143
+        },
+        "FPR": {
+          "female": 0.7257506019278708,
+          "male": 0.552207526433471,
+          "missing": 0.6795467108899945,
+          "other": 0.7315130830489193
+        }
+      },
+      "counts": {
+        "male": 589211,
+        "female": 136020,
+        "missing": 20127,
+        "other": 2038
+      }
+    }
+  }
+}

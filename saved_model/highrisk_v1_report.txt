@@ -1,0 +1,18 @@
+tau=0.044  holdout=2023/24
+
+              precision    recall  f1-score   support
+
+       Minor       0.97      0.41      0.58    665127
+    HighRisk       0.16      0.91      0.27     82269
+
+    accuracy                           0.47    747396
+   macro avg       0.57      0.66      0.43    747396
+weighted avg       0.88      0.47      0.55    747396
+
+Balanced accuracy: 0.661
+ROC-AUC: 0.731
+PR-AUC: 0.222
+Brier: 0.093
+ECE: 0.038
+MCE: 0.136
+Macro-F1: 0.427
