@@ -5,7 +5,7 @@ import scipy.sparse as sp
 import matplotlib.pyplot as plt
 from zenml.steps import step
 from src.modeling import get_leakage_cols
-from sklearn.calibration import CalibratedClassifierCV  # <-- needed to detect/unwrap
+from sklearn.calibration import CalibratedClassifierCV
 
 @step(enable_cache=False)
 def plot_shap_importance(fe_df,model_path,holdout_year="2023/24",out_dir="saved_model",sample_size=20000,):
@@ -23,16 +23,16 @@ def plot_shap_importance(fe_df,model_path,holdout_year="2023/24",out_dir="saved_
         # if so, raise an error
         raise ValueError(f"no rows found for holdout year {holdout_year}")
 
-    #  keeping only the model inputs so im gonan drop target/leakage columns
+    #  keeping only the model inputs so im going to drop target/leakage columns
     model_inputs_holdout = holdout_split.drop(columns=get_leakage_cols(holdout_split))
 
     #  sample some rows so shap is fast enough to run
     # 20000 samples
     n_rows_to_sample = min(sample_size, len(model_inputs_holdout))
-    # randomly sample the rows
+    # randomly sampling the rows
     sampled_inputs = model_inputs_holdout.sample(n=n_rows_to_sample, random_state=1)
 
-    #  load the trained pipeline and pull out the parts I need
+    #  loading the trained pipeline and pulling out the parts I need
     trained_pipeline   = joblib.load(model_path)
     preprocessor       = trained_pipeline.named_steps["prep"]    # columnTransformer
     feature_selector   = trained_pipeline.named_steps["select"]  # selectFromModel
@@ -74,7 +74,7 @@ def plot_shap_importance(fe_df,model_path,holdout_year="2023/24",out_dir="saved_
     explainer   = shap.TreeExplainer(base_model)  # <<< use the unwrapped model here
     shap_values = explainer.shap_values(selected_inputs)
 
-    # LightGBM binary can return [negative_class, positive_class] here ImM are plotting the positive class/ High risk in this case as i only care for it
+    # Lgbm binary can return [negative_class, positive_class] here ImM are plotting the positive class/ High risk in this case as i only care for it
     if isinstance(shap_values, list):
         shap_values_to_plot = (shap_values[1]
                                if len(shap_values) > 1

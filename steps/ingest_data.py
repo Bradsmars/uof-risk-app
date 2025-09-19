@@ -1,8 +1,8 @@
 
-#zenml step: load raw excel workbooks for each year and give back
-#a dict like {"2022": df, "2023": df, "2024": df}
+# loading raw excel workbooks for each year and giving back
+# a dict like {"2022": df, "2023": df, "2024": df}
 
-#no schema cleanups here. im just reading files and a tiny format fix for 2024.
+# no schema cleanups here except for a tiny format fix im mainly im just reading files.
 
 from pathlib import Path
 import pandas as pd
@@ -10,8 +10,7 @@ from zenml.steps import step
 
 from src.data_ingestion import load_workbook
 
-# config for what to read
-# year -> (filename, {sheet_name_in_xlsx: year_value_to_tag}, [other_sheet_names])
+# configuration for what to read
 WORKBOOKS = {
     "2022": (
         "police-use-of-force-statistics-england-and-wales-open-data-table-2022.xlsx",
@@ -38,16 +37,17 @@ def ingest_data(data_dir):
     output : {"2022": df, "2023": df, "2024": df}
     """
     base = Path(data_dir).expanduser()
-    frames: dict[str, pd.DataFrame] = {}
+    frames = {}
 
     # tiny helpers right here so the flow reads easy
-    def merge_2022_sheets(dfs: list[pd.DataFrame]) -> pd.DataFrame:
+    def merge_2022_sheets(dfs):
         # I expect 2 frames (2020_21 and 2021_22) -> stack them
         return pd.concat(dfs, ignore_index=True)
     
 
-    def fix_2024_year_format(df: pd.DataFrame) -> pd.DataFrame:
+    def fix_2024_year_format(df):
         # 2024 file has year like "2024_25" -> I want "2024/25"
+        # small year format fix
         if "year" in df.columns:
             df = df.copy()
             df["year"] = df["year"].astype(str).str.replace("_", "/", regex=False)

@@ -7,12 +7,12 @@ from src.eda import run_eda_simpler
 
 
 @step(enable_cache=False)
-def eda_step(input_dataframe: pd.DataFrame, output_directory: str = "eda_simple_plots") -> str:
+def eda_step(input_dataframe, output_directory = "eda_simple_plots"):
     """
     running EDA and saving basic plots to output_directory.
 
-    Returns:
-        Absolute path to the folder containing the saved plots.
+    
+    returns: absolute path to the folder containing the saved plots.
     """
     # here im making sure the output directory exists (run_eda_simpler also does this,
    

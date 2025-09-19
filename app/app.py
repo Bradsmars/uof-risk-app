@@ -33,9 +33,9 @@ def load_artifacts():
     loading the trained pipeline, metadata json, and the parquet used for DiCE.
     cache it so every rerun isnt slow. if stuff is missing, i tell the user.
     """
-    pipeline = joblib.load(LATEST_MODEL_PATH)  # trained sklearn/LightGBM pipeline
+    pipeline = joblib.load(LATEST_MODEL_PATH)  # trained sklearn LightGBM pipeline
     metadata = json.loads(MODEL_METADATA_PATH.read_text(encoding="utf-8"))
-    dice_training_dataframe = pd.read_parquet(DICE_TRAIN_PARQUET_PATH)  # includes 'highrisk' column
+    dice_training_dataframe = pd.read_parquet(DICE_TRAIN_PARQUET_PATH)  # includes highrisk column
     # the exact raw column order the model expects. fall back to whatever dice_train has (minus target)
     expected_raw_columns = metadata.get(
         "raw_columns",
@@ -167,16 +167,16 @@ with right_column:
 
     if submitted:
    
-            # 1. Build a 1-row input with correct data types
+            # 1. building a 1-row input with correct data types
             # -------------------------------------------
-            # i copy a training row (minus target) so all data types match exactly what the model saw.
+            #  copying a training row (minus target) so all data types match exactly what the model saw.
             training_template_row = dice_train.drop(columns=["highrisk"], errors="ignore").iloc[0].copy()
             model_input_dataframe = training_template_row.to_frame().T  # 1-row DataFrame
 
           
             # 2. Write ALL the form fields into model_input_dataframe
             # ----------------------------------------------------
-            # I loop a list of (column_name, value, is_numeric) so it's obvious what's getting set.
+            # I loop a list of (column_name, value, is_numeric) so its obvious whats getting set.
             for column_name, value, is_numeric in [
                 # categoricals
                 ("person_perceived_age",       person_perceived_age,       False),
@@ -218,6 +218,8 @@ with right_column:
             # mini-derived flag: if the highest CED use looks like "none/missing", set parent 'ced' to "no", else "yes"
             ced_parent_flag = "no" if str(ced_highest_use).strip().lower() in {"missing", "no", "none", "not_stated"} else "yes"
             put_value(model_input_dataframe, "ced", ced_parent_flag)
+            
+            #this should be done for othe fields come back to this when you have time
 
       
             # 3. Neutralise every non-form column

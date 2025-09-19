@@ -20,12 +20,8 @@ from src.cf_utils import infer_binary_cols, CAT_BASE, NUM_BASE
 
 
 
-
-
-
-
 @step(enable_cache=False)
-def finalise_model(fe_df: pd.DataFrame, version: str = "v1", tau: float = 0.044, holdout_year: str = "2023/24",out_dir: str = "saved_model"):
+def finalise_model(fe_df, version = "v1", tau = 0.044, holdout_year = "2023/24",out_dir = "saved_model"):
     
     df = fe_df.copy()
     # ---- split train/holdout -----------------------------------
@@ -47,7 +43,7 @@ def finalise_model(fe_df: pd.DataFrame, version: str = "v1", tau: float = 0.044,
     
     y_pred = (proba >= tau).astype(int)
 
-    # ---- ensure output dir exists before saving figures ----
+    # ---- ensuring that the output directory exists before saving figures ----
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
 
@@ -79,8 +75,8 @@ def finalise_model(fe_df: pd.DataFrame, version: str = "v1", tau: float = 0.044,
     ece_pycalib = float(binary_ECE(labels, probs, bins=10))
     mce_pycalib = float(binary_MCE(labels, probs, bins=10))
 
-    # 3) reliability diagram (needs n×2 matrix of class probs according to documentation)
-    scores_2d = np.column_stack([1.0 - probs, probs])  # columns: P(y=0), P(y=1)
+    # 3) reliability diagram (needs n x 2 matrix of class probs according to documentation)
+    scores_2d = np.column_stack([1.0 - probs, probs])  # columns P(y=0), P(y=1)
 
     fig = plot_reliability_diagram(
         labels=labels,
@@ -245,7 +241,7 @@ def finalise_model(fe_df: pd.DataFrame, version: str = "v1", tau: float = 0.044,
     
     
     # -------------  persist DiCE inputs ------------------------------
-    # Make sure base frames themselves have unique columns
+    # making sure base frames themselves have unique columns
     
     # this is needed to make the schema stable for counterfactuals
     ## DiCE (and my bridge code) need a fixed, unambiguous set of columns so here im dropping duplicates
@@ -254,15 +250,15 @@ def finalise_model(fe_df: pd.DataFrame, version: str = "v1", tau: float = 0.044,
     
     
 
-    # Building feature groups
+    # building feature groups
     # here i am Defining feature groups that DiCE can understand and edit
     bin_cols_all = infer_binary_cols(X_full) #Calling my helper to auto detec true/false or 0/1 style fields from the training features.
     cat_cols     = [column for column in CAT_BASE if column in X_full.columns] #taking the CAT_BASE list from cf_utils and keeps only those that are in the training features
-    # If a column is in the categorical list, im making sure to not r treat it as binary
+    # if a column is in the categorical list, im making sure to not r treat it as binary
     bin_cols     = [column for column in bin_cols_all if column not in cat_cols] #removing any overlaps between binary and categorical lists preferring categorical, because it allows missing n other levels in futu
     num_cols     = [column for column in NUM_BASE if column in X_full.columns] #taking the NUM_BASE list from cf_utils and keeps only those that are in the training features
 
-    # Keep order but remove duplicates
+    # keep order but remove duplicates
     #cols_used is the contract the exact raw features ill be giving to DiCE and my bridge    no extras, no duplicates, predictable order.
     cols_used = list(dict.fromkeys([*bin_cols, *cat_cols, *num_cols])) #drops duplicates too while preserving order, as this becomes the schema ill give to dice and ym bridge, its table no duplicates
 

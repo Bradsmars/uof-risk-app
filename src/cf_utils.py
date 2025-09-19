@@ -18,7 +18,7 @@ from pathlib import Path
 class TauWrapper:
     """
     wraps a sklearn-style pipeline and applies a custom probability cutoff (tau).
-    The tau value is set from metadata (meta['tau']) during model finalization.
+    The tau value is set from metadata (meta['tau']) during model finalisation.
     """
     def __init__(self, model, tau):
         self.model = model
@@ -100,9 +100,9 @@ def infer_binary_cols(df: pd.DataFrame) -> List[str]:
         for value in values:
             # if value not in yes or no then
             if value not in ("yes", "no"):
-                # if we hit a non-yes/no value, then fail
+                # if I hit a non-yes/no value, then fail
                 return False
-        # if we only saw yes/no values, succeed
+        # if I only saw yes/no values, succeed
         return len(values) > 0  # at least one non-missing value
     
 
@@ -113,7 +113,7 @@ def infer_binary_cols(df: pd.DataFrame) -> List[str]:
         accepts ints or floats; if any value can't be read as a number, return False.
         """
         
-        # If there are no values left after dropping missing values, we can't call it binary
+        # If there are no values left after dropping missing values, I can't call it binary
         if len(values) == 0:
             return False
         
@@ -181,7 +181,7 @@ def impute_for_dice(df: pd.DataFrame, binary_cols, cat_cols) -> pd.DataFrame:
     - if i pass a column name that doesn’t exist, i ignore it.
     -------------------------------------------------------------
     """
-    # guard: making sure we got a dataframe
+    # guard: making sure I got a dataframe
     assert isinstance(df, pd.DataFrame), "df must be a pandas DataFrame"
 
 
@@ -220,9 +220,9 @@ def impute_for_dice(df: pd.DataFrame, binary_cols, cat_cols) -> pd.DataFrame:
     return df_clean
 
 
-# ===============================
+# 
 #  Schema contract from metadata
-# ===============================
+# -------------------------------
 def get_expected_raw(pipe, meta: dict) -> List[str]:
     """
     Goal
@@ -328,7 +328,7 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     # making sure that every column the model expects is present + in the right order
     for column in expected_raw_column_order_for_model:
         if column not in full_schema_query_row.columns:
-            full_schema_query_row[column] = np.nan  # <- if it's missing, we add it as NaN so the order matches perfect
+            full_schema_query_row[column] = np.nan  # <- if it's missing, I add it as NaN so the order matches perfect
     full_schema_query_row = full_schema_query_row[expected_raw_column_order_for_model]  # <- lock the order to exactly what model expects
     
 
@@ -346,7 +346,7 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     dataset_view_for_dice = pd.concat(
         [safe_training_dataframe.drop(columns=immutable_feature_names, errors="ignore"), editable_query_view],
         ignore_index=True,
-    )  # <- we stitch the query onto a safe training snapshot so DiCE has a proper df to explore
+    )  # <- im stitch the query onto a safe training snapshot so DiCE has a proper df to explore
 
     # one imputation pass for the exact frame DiCE will see
     binary_features_in_dice_view = [column
@@ -360,7 +360,7 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     dataset_view_for_dice = impute_for_dice(dataset_view_for_dice, binary_features_in_dice_view, categorical_features_in_dice_view)  # <- zero NaNs, otherwise DiCE goes weird
 
     # 1-row query for DiCE (features only; impute once)
-    dice_query_features_only = editable_query_view.drop(columns=["highrisk"], errors="ignore").copy()  # <- DiCE wants just features, so we exclude target feature
+    dice_query_features_only = editable_query_view.drop(columns=["highrisk"], errors="ignore").copy()  # <- DiCE wants just features, so I exclude target feature
     dice_query_features_only = impute_for_dice(dice_query_features_only, binary_features_in_dice_view, categorical_features_in_dice_view)  # <- keep it clean, no nulls
     
     
@@ -411,19 +411,19 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     if "multi_location" in present_feature_names_set:
         restricted_feature_value_ranges["multi_location"] = [0, 0]  # force to 0
     if "tactic_count" in present_feature_names_set:
-        restricted_feature_value_ranges["tactic_count"] = [0, 0]  # can only reduce (we lock upper to 0 for now, super strict)
+        restricted_feature_value_ranges["tactic_count"] = [0, 0]  # can only go down in value (Im lock upper to 0 for now, super strict, will change later)
     if "impact_factor_sum" in present_feature_names_set:
         restricted_feature_value_ranges["impact_factor_sum"] = [0, 0]  # can only reduce (same idea, keep it safe and boring)
         
         
 
-    # --------------------------------------------------- 6) Generating CFs (we pass ranges + always flip to Minor) --------------------------------------------------------------
+    # --------------------------------------------------- 6) Generating CFs (I pass ranges + always flip to Minor) --------------------------------------------------------------
     
     
     generated_cf_result = dice_explainer_engine.generate_counterfactuals(
         query_instances=dice_query_features_only,
         total_CFs=int(total_cfs),  # <- how many CFs to try to make
-        desired_class=0,  # HighRisk -> Minor at the wrapped τ (we always target the safer class)
+        desired_class=0,  # HighRisk -> Minor at the wrapped τ (Im always target the safer class)
         features_to_vary=features_to_vary,
         permitted_range=restricted_feature_value_ranges or None,  # <- bounds so DiCE doesn't suggest wild stuff
         verbose=False,
@@ -436,12 +436,12 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     if cf_changes_only_table is None and hasattr(generated_cf_result, "visualize_as_dataframe"):
         cf_changes_only_table = generated_cf_result.visualize_as_dataframe(show_only_changes=True)  # <- backup path, just in case
     if cf_changes_only_table is None:
-        return pd.DataFrame([{"_note": "no counterfactuals produced."}])  # <- if DiCE gives up, we at least say so
+        return pd.DataFrame([{"_note": "no counterfactuals produced."}])  # <- if DiCE gives up, im giving out message to say so at least
 
     # dropping immutables from presentation
-    cf_changes_only_table = cf_changes_only_table.drop(columns=immutable_feature_names, errors="ignore")  # <- we never changed these, so no point showing them
+    cf_changes_only_table = cf_changes_only_table.drop(columns=immutable_feature_names, errors="ignore")  # <-  never changed, so no point showing them
     
-
+    # ----------------- add probabilties with counterfactuals if you have time ---------------------------------#
     
     # ----------------------------------------------------------------- 7) Building the  output  ----------------------------------------------------------------------
     
@@ -449,14 +449,14 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     if not include_original:
         output_df = cf_changes_only_table.copy() # making a copy so i dont mess up the original table by accident
         output_df.insert(0, "_row", [f"cf{i+1}"
-                                     for i in range(len(output_df))])  # <- # slap a label at the front like CF1, CF2… so its easy to read
+                                     for i in range(len(output_df))])  # <- # putting a label at the front like CF1, CF so its easy to read
         return output_df.reset_index(drop=True) # reset the index so it looks neat
 
-    # take the original query row but drop stuff we never let DiCE change immutables in this case
+    # take the original query row but drop stuff I never let DiCE change immutables in this case
     original_row = full_schema_query_row.drop(columns=immutable_feature_names, errors="ignore").copy()
     ## fill any missing bits the same way as earlier so taNs ypes are stable (dice hates Nlol)
-    original_row = impute_for_dice(original_row, binary_features_in_dice_view, categorical_features_in_dice_view)  # <- keep data type/NA rules consistent
-    ## puttig a tag so the first row literally says “original”
+    original_row = impute_for_dice(original_row, binary_features_in_dice_view, categorical_features_in_dice_view)  # <- keeping the data type/ NA rules consistent
+    ## putting a tag so the first row literally says original in cfs
     original_row.insert(0, "_row", "original")
 
     ## now making the CF table that’s parallel to the original (same idea: add labels CF1, CF2…)
@@ -472,7 +472,7 @@ def compute_counterfactuals(pipe, meta, total_cfs, dice_train_df, query_df, incl
     labeled_counterfactual_rows = labeled_counterfactual_rows.reindex(columns=all_aligned_columns)
 
     ## finally stack them: original on top, then all the CFs underneath
-    combined_output_table = pd.concat([original_row, labeled_counterfactual_rows], ignore_index=True)  # <- stack original + CFs in one neat table
+    combined_output_table = pd.concat([original_row, labeled_counterfactual_rows], ignore_index=True)  # <- stack original and CFs in one neat table
     
     ## and return a fresh index again, just so it looks tidy in the UI
     return combined_output_table.reset_index(drop=True)
